@@ -1,5 +1,6 @@
 package com.song.web.controller;
 
+import com.song.common.Constants;
 import com.song.domain.SysResource;
 import com.song.domain.SysUser;
 import com.song.service.ResourceService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Set;
 
@@ -25,8 +27,9 @@ public class IndexController extends BaseController{
     private UserService userService;
 
     @RequestMapping("/")
-    public String index(@CurrentUser SysUser loginUser, Model model) throws Exception {
-        Set<String> permissions = userService.findPermissions(loginUser.getUsername());
+    public String index(@CurrentUser SysUser loginUser, Model model, HttpServletRequest request) throws Exception {
+        SysUser user = (SysUser) request.getAttribute(Constants.CURRENT_USER);
+        Set<String> permissions = userService.findPermissions(user.getUsername());
         List<SysResource> menus = resourceService.findMenus(permissions);
         model.addAttribute("menus", menus);
         return "index";

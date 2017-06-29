@@ -101,7 +101,7 @@
 
   <select id="selectRoleNameByIds" resultMap="BaseResultMap" >
     select
-    role
+    <include refid="Base_Column_List"/>
     from sys_role
     WHERE available = 1
     AND id in

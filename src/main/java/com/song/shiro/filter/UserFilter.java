@@ -1,6 +1,7 @@
 package com.song.shiro.filter;
 
 import com.song.common.Constants;
+import com.song.domain.SysUser;
 import com.song.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.PathMatchingFilter;
@@ -20,7 +21,8 @@ public class UserFilter extends PathMatchingFilter {
     @Override
     protected boolean onPreHandle(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
         String userName = (String) SecurityUtils.getSubject().getPrincipal();
-        request.setAttribute(Constants.CURRENT_USER,userService.findByUsername(userName));
+        SysUser user = userService.findByUsername(userName);
+        request.setAttribute(Constants.CURRENT_USER, user);
         return super.onPreHandle(request, response, mappedValue);
     }
 }

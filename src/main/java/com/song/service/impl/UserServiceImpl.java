@@ -5,7 +5,6 @@ import com.song.dao.SysUserMapper;
 import com.song.domain.SysUser;
 import com.song.service.RoleService;
 import com.song.service.UserService;
-import com.song.utils.PasswordHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
