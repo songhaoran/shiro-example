@@ -13,7 +13,7 @@
     <context:annotation-config/>
 
     <!--扫描controller-->
-    <context:component-scan base-package="com.song.web"/>
+    <context:component-scan base-package="com.song"/>
 
     <!-- 当在web.xml 中   DispatcherServlet使用 <url-pattern>/</url-pattern> 映射时，能映射静态资源 -->
     <mvc:default-servlet-handler/>

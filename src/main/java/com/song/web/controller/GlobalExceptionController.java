@@ -1,8 +1,8 @@
-package com.song.web.controllerAdvice;
+package com.song.web.controller;
 
-import com.song.web.controller.BaseController;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalExceptionController extends BaseController {
 
     @ExceptionHandler(Exception.class)
-    private String defaultExceptionHandle(HttpServletRequest request, Exception e) {
+    private ModelAndView defaultExceptionHandle(HttpServletRequest request, Exception e) {
         log.debug(request.getRequestURI() + ":" + e.getMessage());
-        return "unauthorized";
+        return new ModelAndView("unauthorized");
     }
 }
