@@ -9,7 +9,7 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!--密码校验器-->
-    <bean id="userCredentials" class="com.song.shiro.credentials.UserCredentials">
+    <bean id="userCredentials" class="com.song.shiro.credentials.UserCredentialsMatcher">
         <property name="hashAlgorithmName" value="md5"/>
         <property name="hashIterations" value="2"/>
         <property name="storedCredentialsHexEncoded" value="true"/>
@@ -50,7 +50,7 @@
 
     <!--过滤器-->
     <!--基于Form表单的身份验证过滤器-->
-    <bean id="formAuthenticationFilter" class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
+    <bean id="formAuthenticationFilter" class="com.song.shiro.filter.CustomFormAuthenticationFilter">
         <property name="usernameParam" value="username"/>
         <property name="passwordParam" value="password"/>
         <property name="rememberMeParam" value="rememberMe"/>
@@ -69,6 +69,8 @@
         <property name="filters">
             <util:map>
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
+                <!--本过滤器的功能是访问指定路径时,获取用户的身份(前提是用户已成功登录),然后根据身份获取用户对象,将对象放到requst域中.本过滤器需设置到过滤器拦截链的user过滤器后面
+                  注:该方式并不好,因为每次请求指定的拦截路径,都会查一次数据库,因此最好是重写表单登录验证过滤器,当登录成功时,将用户对象放到session中-->
                 <entry key="sysUser" value-ref="userFilter"/>
             </util:map>
         </property>

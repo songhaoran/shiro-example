@@ -30,6 +30,9 @@ public class SysOrganization {
      * 
      */
     private Boolean available;
+    public boolean isRootNode() {
+        return parentId == 0;
+    }
 
     public String makeSelfAsParentIds() {
         return getParentIds() + getId() + "/";

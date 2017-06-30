@@ -28,7 +28,7 @@ public class IndexController extends BaseController{
 
     @RequestMapping("/")
     public String index(@CurrentUser SysUser loginUser, Model model, HttpServletRequest request) throws Exception {
-        SysUser user = (SysUser) request.getAttribute(Constants.CURRENT_USER);
+        SysUser user = (SysUser) request.getSession().getAttribute(Constants.CURRENT_USER);
         Set<String> permissions = userService.findPermissions(user.getUsername());
         List<SysResource> menus = resourceService.findMenus(permissions);
         model.addAttribute("menus", menus);
