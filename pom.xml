@@ -37,6 +37,14 @@
         <redis.version>2.9.0</redis.version>
         <jedis.version>2.9.0</jedis.version>
         <spring.data.redis.version>1.8.4.RELEASE</spring.data.redis.version>
+
+        <!-- logging start -->
+        <slf4j.version>1.7.21</slf4j.version>
+        <logback.version>1.1.7</logback.version>
+        <logback.ext.spring>0.1.4</logback.ext.spring>
+
+        <log4j2.version>2.6.2</log4j2.version>
+        <!-- logging end -->
     </properties>
 
     <dependencies>
@@ -91,13 +99,56 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.5</version>
+            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.5</version>
+            <version>${log4j2.version}</version>
         </dependency>
+
+        <!-- logging start -->
+        <!-- 日志
+         java 日志：slf4j 是规范、接口
+         log4j\logback\common-logging 是实现
+         -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+
+        <!--Log4j 1.x API Bridge-->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>
+
+        <!-- Apache Commons Logging Bridge -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jcl</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>
+
+        <!-- SLF4J Bridge -->
+        <!--<dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>-->
+        <!-- JUL(Java Util Logging) Adapter -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jul</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>
+
+        <!--log4j 2 end-->
+
+        <!-- logging end -->
 
         <!-- Mybatis -->
         <dependency>
@@ -237,12 +288,6 @@
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>${redis.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>${jedis.version}</version>
         </dependency>
 
         <dependency>

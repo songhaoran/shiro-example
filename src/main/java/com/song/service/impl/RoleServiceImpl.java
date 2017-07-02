@@ -7,7 +7,14 @@ import com.song.service.ResourceService;
 import com.song.service.RoleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.JedisPool;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,6 +31,12 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private ResourceService resourceService;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Autowired
+    private JedisPool jedisPool;
+
     public SysRole createRole(SysRole role) {
         roleMapper.insertSelective(role);
         return role;
@@ -39,7 +52,10 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public SysRole findOne(Long roleId) {
+    @Cacheable(value = {"redisCache","customObjectRedisCache"})
+    public SysRole findOne(final Long roleId) {
+        System.out.println("******************" + roleId);
+        redisTemplate.boundHashOps(roleId+"").put("test","vale");
         return roleMapper.selectByPrimaryKey(roleId);
     }
 
@@ -59,7 +75,7 @@ public class RoleServiceImpl implements RoleService {
         }*/
         List<SysRole> roles = roleMapper.selectRoleNameByIds(roleIds);
         if (roles != null && roles.size() > 0) {
-            for (SysRole role :roles) {
+            for (SysRole role : roles) {
                 String roleName = role.getRole();
                 if (StringUtils.isNotBlank(roleName)) {
                     roleNames.add(roleName);
@@ -70,6 +86,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Cacheable()
     public Set<String> findPermissions(Long[] roleIds) {
         Set<Long> resourceIdsSet = new HashSet<Long>();
        /* for (Long roleId : roleIds) {
@@ -80,12 +97,12 @@ public class RoleServiceImpl implements RoleService {
         }*/
         List<SysRole> roles = roleMapper.selectRoleNameByIds(roleIds);
         if (roles != null && roles.size() > 0) {
-            for (SysRole role :roles) {
+            for (SysRole role : roles) {
                 String resourceIds = role.getResourceIds();
                 if (StringUtils.isNotBlank(resourceIds)) {
                     String[] arr = resourceIds.split(",");
                     Long[] ids = new Long[arr.length];
-                    for (int i = 0;i<arr.length;i++) {
+                    for (int i = 0; i < arr.length; i++) {
                         ids[i] = Long.parseLong(arr[i]);
                     }
                     resourceIdsSet.addAll(Arrays.asList(ids));

@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -105,5 +106,12 @@ public class UserController {
     private void setCommonData(Model model) {
         model.addAttribute("organizationList", organizationService.findAll());
         model.addAttribute("roleList", roleService.findAll());
+    }
+
+    @RequestMapping("/getUser")
+    @ResponseBody
+    public SysUser getUser(String username) {
+        SysUser byUsername = userService.findByUsername(username);
+        return byUsername;
     }
 }

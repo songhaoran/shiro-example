@@ -10,6 +10,8 @@ import com.song.service.RoleService;
 import com.song.utils.CommonUtils;
 import com.song.utils.SpringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
@@ -22,6 +24,7 @@ import static com.song.utils.CommonUtils.parseString2LongCollection;
  * <p>Version: 1.0
  */
 public class Functions {
+    private static Logger log = LogManager.getLogger(Functions.class);
 
     public static boolean in(String contain, Object element) throws Exception {
         if(StringUtils.isBlank(contain)) {
@@ -67,26 +70,31 @@ public class Functions {
         return role.getDescription();
     }
 
-    public static String roleNames(String roleIds) throws Exception{
-        if(StringUtils.isBlank(roleIds)) {
-            return "";
-        }
-
-        StringBuilder s = new StringBuilder();
-        for(Long roleId : CommonUtils.parseString2LongCollection(roleIds,",")) {
-            SysRole role = getRoleService().findOne(roleId);
-            if(role == null) {
+    public static String roleNames(String roleIds){
+        try {
+            if(StringUtils.isBlank(roleIds)) {
                 return "";
             }
-            s.append(role.getDescription());
-            s.append(",");
-        }
 
-        if(s.length() > 0) {
-            s.deleteCharAt(s.length() - 1);
-        }
+            StringBuilder s = new StringBuilder();
+            for(Long roleId : CommonUtils.parseString2LongCollection(roleIds,",")) {
+                SysRole role = getRoleService().findOne(roleId);
+                if(role == null) {
+                    return "";
+                }
+                s.append(role.getDescription());
+                s.append(",");
+            }
 
-        return s.toString();
+            if(s.length() > 0) {
+                s.deleteCharAt(s.length() - 1);
+            }
+
+            return s.toString();
+        } catch (Exception e) {
+            log.error("Function:",e);
+        }
+        return "";
     }
     public static String resourceName(Long resourceId) {
         SysResource resource = getResourceService().findOne(resourceId);

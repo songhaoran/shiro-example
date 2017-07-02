@@ -7,6 +7,7 @@ import com.song.service.RoleService;
 import com.song.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -78,6 +79,7 @@ public class UserServiceImpl implements UserService {
      * @param username
      * @return
      */
+    @Cacheable(value = {"redisCache","customObjectRedisCache"})
     public SysUser findByUsername(String username) {
         return userMapper.selectByUserName(username);
     }
@@ -88,6 +90,7 @@ public class UserServiceImpl implements UserService {
      * @param username
      * @return
      */
+    @Cacheable(value = {"redisCache","customObjectRedisCache"})
     public Set<String> findRoles(String username) {
         SysUser user = findByUsername(username);
         if (user == null) {

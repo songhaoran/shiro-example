@@ -1,6 +1,8 @@
 package com.song.domain;
 
-public class SysUser {
+import java.io.Serializable;
+
+public class SysUser implements Serializable {
     /**
      * 对应数据库 sys_user.id
      * 

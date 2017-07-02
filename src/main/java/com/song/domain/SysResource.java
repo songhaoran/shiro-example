@@ -1,6 +1,8 @@
 package com.song.domain;
 
-public class SysResource {
+import java.io.Serializable;
+
+public class SysResource implements Serializable {
     /**
      * 对应数据库 sys_resource.id
      * 

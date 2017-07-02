@@ -20,6 +20,7 @@
     <c:forEach items="${menus}" var="m">
         <a href="${pageContext.request.contextPath}/${m.url}" target="content">${m.name}</a><br/>
     </c:forEach>
+    <a href="${pageContext.request.contextPath}/user/getUser?username=admin">获取admin</a><br/>
 </div>
 
 

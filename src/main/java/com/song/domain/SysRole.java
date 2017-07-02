@@ -1,6 +1,8 @@
 package com.song.domain;
 
-public class SysRole {
+import java.io.Serializable;
+
+public class SysRole implements Serializable {
     /**
      * 对应数据库 sys_role.id
      * 

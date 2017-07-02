@@ -1,6 +1,8 @@
 package com.song.domain;
 
-public class SysOrganization {
+import java.io.Serializable;
+
+public class SysOrganization implements Serializable {
     /**
      * 对应数据库 sys_organization.id
      * 

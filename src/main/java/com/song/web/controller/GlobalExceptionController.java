@@ -14,7 +14,7 @@ public class GlobalExceptionController extends BaseController {
 
     @ExceptionHandler(Exception.class)
     private ModelAndView defaultExceptionHandle(HttpServletRequest request, Exception e) {
-        log.debug(request.getRequestURI() + ":" + e.getMessage());
+        log.debug(request.getRequestURI() + ":", e);
         return new ModelAndView("unauthorized");
     }
 }
