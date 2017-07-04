@@ -70,16 +70,17 @@
         </property>
     </bean>
 
+    <bean id="keyGenerator" class="com.song.cache.keyGenerator.MyKeyGenerator"/>
 
-    <cache:annotation-driven cache-manager="cacheManager"/>
+    <cache:annotation-driven cache-manager="cacheManager" key-generator="keyGenerator"/>
     <!--cacheManager-->
     <bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
         <property name="caches">
             <set>
-                <bean class="com.song.cache.ObjectRedisCache">
+               <!-- <bean class="com.song.cache.ObjectRedisCache">
                     <property name="redisTemplate" ref="redisTemplate"/>
                     <property name="name" value="customObjectRedisCache"/>
-                </bean>
+                </bean>-->
                 <bean class="org.springframework.data.redis.cache.RedisCache">
                     <!--默认false-->
                     <constructor-arg name="allowNullValues" value="false"/>

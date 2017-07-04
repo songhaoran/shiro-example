@@ -21,7 +21,7 @@ public class ObjectRedisCache implements Cache {
 
     @Override
     public String getName() {
-        return "objectRedisCache";
+        return name;
     }
 
     @Override
@@ -81,4 +81,5 @@ public class ObjectRedisCache implements Cache {
     public void setRedisTemplate(RedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
+
 }

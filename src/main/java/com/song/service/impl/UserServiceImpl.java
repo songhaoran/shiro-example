@@ -76,12 +76,13 @@ public class UserServiceImpl implements UserService {
     /**
      * 根据用户名查找用户
      *
-     * @param username
+     * @param username_user
      * @return
      */
-    @Cacheable(value = {"redisCache","customObjectRedisCache"})
-    public SysUser findByUsername(String username) {
-        return userMapper.selectByUserName(username);
+    @Cacheable(value = {"redisCache"})
+    public SysUser findByUsername(String username_user) {
+        System.out.println("************find from sql*************");
+        return userMapper.selectByUserName(username_user);
     }
 
     /**
@@ -90,7 +91,6 @@ public class UserServiceImpl implements UserService {
      * @param username
      * @return
      */
-    @Cacheable(value = {"redisCache","customObjectRedisCache"})
     public Set<String> findRoles(String username) {
         SysUser user = findByUsername(username);
         if (user == null) {
