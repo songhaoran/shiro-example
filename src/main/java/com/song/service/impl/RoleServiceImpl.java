@@ -52,7 +52,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Cacheable(value = {"redisCache","customObjectRedisCache"})
+    @Cacheable(value = {"redisCache"})
     public SysRole findOne(final Long roleId) {
         System.out.println("******************" + roleId);
         redisTemplate.boundHashOps(roleId+"").put("test","vale");
@@ -86,7 +86,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Cacheable()
     public Set<String> findPermissions(Long[] roleIds) {
         Set<Long> resourceIdsSet = new HashSet<Long>();
        /* for (Long roleId : roleIds) {

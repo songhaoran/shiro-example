@@ -57,7 +57,13 @@
         <property name="loginUrl" value="/login"/>
     </bean>
 
-    <bean id="userFilter" class="com.song.shiro.filter.UserFilter"/>
+    <!--废弃-->
+    <!--<bean id="userFilter" class="com.song.shiro.filter.UserFilter"/>-->
+
+    <!--过滤被踢出的session,重定向到-->
+    <bean id="kickOutSessionControlFilter" class="com.song.shiro.filter.KickOutSessionControlFilter">
+        <property name="redirectUrl" value="/login"/>
+    </bean>
 
     <!-- Shiro的Web过滤器 -->
     <!--用户进入"/"的访问路径:首先会通过user过滤器,这时由于未登录,会被重定向到loginUrl对应的登录路径;然后访问该路径时,又经过了authc过滤器,会根据
@@ -71,7 +77,8 @@
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
                 <!--本过滤器的功能是访问指定路径时,获取用户的身份(前提是用户已成功登录),然后根据身份获取用户对象,将对象放到requst域中.本过滤器需设置到过滤器拦截链的user过滤器后面
                   注:该方式并不好,因为每次请求指定的拦截路径,都会查一次数据库,因此最好是重写表单登录验证过滤器,当登录成功时,将用户对象放到session中-->
-                <entry key="sysUser" value-ref="userFilter"/>
+                <!--<entry key="sysUser" value-ref="userFilter"/>-->
+                <entry key="kickOut" value-ref="kickOutSessionControlFilter"/>
             </util:map>
         </property>
         <property name="filterChainDefinitions">
@@ -80,11 +87,13 @@
                 /login = authc
                 /logout = logout
                 /authenticated = authc
-                /** = user,sysUser
+                /** = kickOut,user
             </value>
         </property>
     </bean>
 
     <!-- Shiro生命周期处理器-->
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <!--用来存放登陆的session-->
+    <bean class="com.song.listener.LocalHttpSessionContext"/>
 </beans>

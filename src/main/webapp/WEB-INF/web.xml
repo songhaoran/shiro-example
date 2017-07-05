@@ -41,6 +41,11 @@
     <dispatcher>REQUEST</dispatcher>
   </filter-mapping>
 
+  <!--自定义的httpSession监听器,用来本地存储登陆用户的session-->
+  <listener>
+    <listener-class>com.song.listener.LocalHttpSessionListener</listener-class>
+  </listener>
+
   <servlet>
     <servlet-name>dispatcherServlet</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
