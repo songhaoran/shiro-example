@@ -2,6 +2,8 @@ package com.song.shiro.realm;
 
 import com.song.domain.SysUser;
 import com.song.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -17,35 +19,46 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Created by Song on 2017/6/28.
  */
 public class UserRealm extends AuthorizingRealm {
+    private Logger log = LogManager.getLogger(UserRealm.class);
+
     @Autowired
     private UserService userService;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        String primaryPrincipal= (String)principalCollection.getPrimaryPrincipal();
-        SysUser user = userService.findByUsername(primaryPrincipal);
-
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        simpleAuthorizationInfo.setRoles(userService.findRoles(primaryPrincipal));
-        simpleAuthorizationInfo.setStringPermissions(userService.findPermissions(primaryPrincipal));
+        try {
+            String primaryPrincipal = (String) principalCollection.getPrimaryPrincipal();
+            simpleAuthorizationInfo.setRoles(userService.findRoles(primaryPrincipal));
+            simpleAuthorizationInfo.setStringPermissions(userService.findPermissions(primaryPrincipal));
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("doGetAuthorizationInfo:" + e);
+        }
         return simpleAuthorizationInfo;
     }
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        if (authenticationToken != null) {
-            String userName = (String) authenticationToken.getPrincipal();
-            //String password = (String) authenticationToken.getCredentials();
-            SysUser user = userService.findByUsername(userName);
+        try {
+            if (authenticationToken != null) {
+                String userName = (String) authenticationToken.getPrincipal();
+                //String password = (String) authenticationToken.getCredentials();
+                SysUser user = userService.findByUsername(userName);
 
-            SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(
-                    userName,
-                    user.getPassword(),
-                    ByteSource.Util.bytes(user.getCredentialsSalt()),
-                    getName());
+                SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(
+                        userName,
+                        user.getPassword(),
+                        ByteSource.Util.bytes(user.getCredentialsSalt()),
+                        getName());
 
-            return simpleAuthenticationInfo;
+                return simpleAuthenticationInfo;
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("doGetAuthenticationInfo:" + e);
+            throw e;
         }
-        return null;
     }
 }

@@ -3,6 +3,8 @@ package com.song.shiro.filter;
 import com.song.common.Constants;
 import com.song.domain.SysUser;
 import com.song.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.PathMatchingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +18,21 @@ import javax.servlet.ServletResponse;
  * 注:该方式并不好,因为每次请求指定的拦截路径,都会查一次数据库,因此最好是重写表单登录验证过滤器,当登录成功时,将用户对象放到session中
  */
 public class UserFilter extends PathMatchingFilter {
+    private Logger log = LogManager.getLogger(this.getClass());
+
     @Autowired
     private UserService userService;
 
     @Override
     protected boolean onPreHandle(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
-        String userName = (String) SecurityUtils.getSubject().getPrincipal();
-        SysUser user = userService.findByUsername(userName);
-        request.setAttribute(Constants.CURRENT_USER, user);
-        return super.onPreHandle(request, response, mappedValue);
+        try {
+            String userName = (String) SecurityUtils.getSubject().getPrincipal();
+            SysUser user = userService.findByUsername(userName);
+            request.setAttribute(Constants.CURRENT_USER, user);
+            return super.onPreHandle(request, response, mappedValue);
+        } catch (Exception e) {
+            log.error(e);
+            throw e;
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.song.shiro.filter;
 
 import com.song.common.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -18,6 +20,8 @@ import java.util.HashMap;
  * 用来检测session中是否包含该session已被踢出的标记,如果包含该标记,那么将该请求重定向到登陆页面,并提示已被强制退出
  */
 public class KickOutSessionControlFilter extends AccessControlFilter {
+    private Logger log = LogManager.getLogger(KickOutSessionControlFilter.class);
+
     @Autowired
     private RedisTemplate redisTemplate;
 
@@ -33,25 +37,29 @@ public class KickOutSessionControlFilter extends AccessControlFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        Subject subject = getSubject(request, response);
-        //未登陆,未记住我登录,放行
-        if (!subject.isAuthenticated() && !subject.isRemembered()) {
+        try {
+            Subject subject = getSubject(request, response);
+            //未登陆,未记住我登录,放行
+            if (!subject.isAuthenticated() && !subject.isRemembered()) {
+                return true;
+            }
+
+            //判断是否被踢出
+            HttpServletRequest req = (HttpServletRequest) request;
+            Object attr = req.getSession().getAttribute(Constants.KICK_OUT_SESSION);
+            if (attr != null) {
+                subject.logout();
+                saveRequest(request);//会把session删掉
+                HashMap<Object, Object> params = new HashMap<>();
+                params.put(Constants.KICK_OUT_SESSION, true);
+                WebUtils.issueRedirect(request, response, redirectUrl, params);
+                return false;
+            }
             return true;
+        } catch (Exception e) {
+            log.error(e);
+            throw e;
         }
-
-        //判断是否被踢出
-        HttpServletRequest req = (HttpServletRequest) request;
-        Object attr = req.getSession().getAttribute(Constants.KICK_OUT_SESSION);
-        if (attr != null) {
-            subject.logout();
-            saveRequest(request);//会把session删掉
-            HashMap<Object, Object> params = new HashMap<>();
-            params.put(Constants.KICK_OUT_SESSION, true);
-            WebUtils.issueRedirect(request,response,redirectUrl,params);
-            return false;
-        }
-
-        return true;
     }
 
     public String getRedirectUrl() {

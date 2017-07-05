@@ -7,6 +7,8 @@ import com.song.service.RoleService;
 import com.song.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,7 @@ public class UserServiceImpl implements UserService {
      *
      * @param user
      */
+    @CachePut(value = {"redisCache"}, key = "'SysUser-'+#user.id")
     public SysUser createUser(SysUser user) {
         //加密密码
         passwordHelper.encryptPassword(user);
@@ -39,12 +42,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CachePut(value = {"redisCache"}, key = "'SysUser-'+#user.id")
     public SysUser updateUser(SysUser user) {
-         userMapper.updateByPrimaryKeySelective(user);
+        userMapper.updateByPrimaryKeySelective(user);
         return user;
     }
 
     @Override
+    @CacheEvict(value = {"redisCache"},key="'SysUser-'+#userId")
     public void deleteUser(Long userId) {
         userMapper.deleteByPrimaryKey(userId);
     }
@@ -64,6 +69,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = {"redisCache"}, key = "'SysUser-'+#userId")
     public SysUser findOne(Long userId) {
         return userMapper.selectByPrimaryKey(userId);
     }
@@ -76,13 +82,13 @@ public class UserServiceImpl implements UserService {
     /**
      * 根据用户名查找用户
      *
-     * @param username_user
+     * @param user
      * @return
      */
-    @Cacheable(value = {"redisCache"})
-    public SysUser findByUsername(String username_user) {
+    @Cacheable(value = {"redisCache"}, key = "'SysUser-'+#user")
+    public SysUser findByUsername(String user) {
         System.out.println("************find from sql*************");
-        return userMapper.selectByUserName(username_user);
+        return userMapper.selectByUserName(user);
     }
 
     /**
@@ -91,6 +97,7 @@ public class UserServiceImpl implements UserService {
      * @param username
      * @return
      */
+    @Cacheable(value = {"redisCache"}, key = "'role-Set<String>-'+#username")
     public Set<String> findRoles(String username) {
         SysUser user = findByUsername(username);
         if (user == null) {
@@ -100,7 +107,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(roleIds)) {
             String[] arr = user.getRoleIds().split(",");
             Long[] ids = new Long[arr.length];
-            for (int i = 0;i<arr.length;i++) {
+            for (int i = 0; i < arr.length; i++) {
                 ids[i] = Long.parseLong(arr[i]);
             }
             return roleService.findRoles(ids);
@@ -114,6 +121,7 @@ public class UserServiceImpl implements UserService {
      * @param username
      * @return
      */
+    @Cacheable(value = {"redisCache"}, key = "'per-Set<String>-'+#username")
     public Set<String> findPermissions(String username) {
         SysUser user = findByUsername(username);
         if (user == null) {
@@ -123,7 +131,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(roleIds)) {
             String[] arr = user.getRoleIds().split(",");
             Long[] ids = new Long[arr.length];
-            for (int i = 0;i<arr.length;i++) {
+            for (int i = 0; i < arr.length; i++) {
                 ids[i] = Long.parseLong(arr[i]);
             }
             return roleService.findPermissions(ids);

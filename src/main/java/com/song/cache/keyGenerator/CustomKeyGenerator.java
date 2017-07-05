@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 /**
  * Created by Song on 2017/7/4.
  */
-public class MyKeyGenerator implements KeyGenerator {
+public class CustomKeyGenerator implements KeyGenerator {
 
     @Override
     public Object generate(Object target, Method method, Object... params) {
