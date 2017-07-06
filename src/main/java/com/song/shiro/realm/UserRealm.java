@@ -33,7 +33,7 @@ public class UserRealm extends AuthorizingRealm {
             simpleAuthorizationInfo.setStringPermissions(userService.findPermissions(primaryPrincipal));
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("doGetAuthorizationInfo:" + e);
+            log.error("doGetAuthorizationInfo  got an error:" + e);
         }
         return simpleAuthorizationInfo;
     }
@@ -46,6 +46,7 @@ public class UserRealm extends AuthorizingRealm {
                 //String password = (String) authenticationToken.getCredentials();
                 SysUser user = userService.findByUsername(userName);
 
+                //用户名;加密后密码;盐(需要与创建用户加密密码时的盐一样);realm名称
                 SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(
                         userName,
                         user.getPassword(),
@@ -57,7 +58,7 @@ public class UserRealm extends AuthorizingRealm {
             return null;
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("doGetAuthenticationInfo:" + e);
+            log.error("doGetAuthenticationInfo got an error:" + e);
             throw e;
         }
     }

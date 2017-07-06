@@ -1,6 +1,7 @@
 package com.song.web.controller;
 
 import com.song.common.Constants;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,9 @@ public class LoginController {
             error = "用户名/密码错误";
         } else if (IncorrectCredentialsException.class.getName().equals(exceptionClassName)) {
             error = "用户名/密码错误";
-        } else if (exceptionClassName != null) {
+        } else if (ExcessiveAttemptsException.class.getName().equals(exceptionClassName)) {
+            error = "密码输入次数过多,请稍后再试!";
+        }else if (exceptionClassName != null) {
             error = "其他错误：" + exceptionClassName;
         }
 

@@ -7,14 +7,14 @@ import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * <p>User: Zhang Kaitao
  * <p>Date: 14-1-28
  * <p>Version: 1.0
  */
-@Service
+@Component
 public class PasswordHelper {
 
     private RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
@@ -37,9 +37,10 @@ public class PasswordHelper {
     }
 
     public void encryptPassword(SysUser user) {
-
+        //随机生成一个盐,最终需一并存入数据库
         user.setSalt(randomNumberGenerator.nextBytes().toHex());
 
+        //加密方式;需要加密的字符串;盐;加密次数
         String newPassword = new SimpleHash(
                 algorithmName,
                 user.getPassword(),

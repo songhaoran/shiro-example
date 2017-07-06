@@ -32,26 +32,6 @@ public class CustomFormAuthenticationFilter extends FormAuthenticationFilter {
     private UserService userService;
 
     @Override
-    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        boolean b = false;
-        try {
-            String username = ((HttpServletRequest) request).getParameter("username");
-            Object o = redisTemplate.boundValueOps(Constants.USER_TRY_LOGIN_TIMES_PRE + username).get();
-            if (o != null && Integer.parseInt(o + "") > Constants.USER_CAN_WRONG_PASSWORD_TIMES) {
-                ((HttpServletRequest) request).setAttribute(Constants.WRONG_PASSWORD_TOO_MANY_TIMES, true);
-                saveRequest(request);
-                return true;
-            }
-
-            b = super.onAccessDenied(request, response);
-        } catch (Exception e) {
-            log.error(e);
-            throw e;
-        }
-        return b;
-    }
-
-    @Override
     protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
         boolean b = false;
         try {
