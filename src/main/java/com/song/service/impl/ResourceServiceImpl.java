@@ -8,6 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.permission.WildcardPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,6 +25,7 @@ public class ResourceServiceImpl implements ResourceService {
     private SysResourceMapper resourceMapper;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW,isolation = Isolation.REPEATABLE_READ)
     public SysResource createResource(SysResource resource) {
         resourceMapper.insertSelective(resource);
         return resource;
@@ -59,6 +63,7 @@ public class ResourceServiceImpl implements ResourceService {
         }
         return permissions;
     }
+
 
     @Override
     public List<SysResource> findMenus(Set<String> permissions) {

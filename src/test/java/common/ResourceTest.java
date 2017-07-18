@@ -32,18 +32,16 @@ class Input implements Runnable {
                 if (!resource.getFlag()) {
                     if (x == 0) {
                         resource.setName("Jack");
-                        try {
+                        //sleep()时,不释放锁,因此在这里使用sleep是没有任何作用的
+                        /*try {
                             Thread.sleep(10);
                         } catch (Exception e) {
-                        }
+                        }*/
                         resource.setSex("male");
                         x = 1;
                     } else {
                         resource.setName("露丝");
-                        try {
-                            Thread.sleep(10);
-                        } catch (Exception e) {
-                        }
+
                         resource.setSex("女");
                         x = 0;
                     }

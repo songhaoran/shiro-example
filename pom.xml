@@ -271,6 +271,11 @@
             <version>${spring.data.redis.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>alipay</artifactId>
+            <version>1.0</version>
+        </dependency>
 
     </dependencies>
 
